@@ -86,8 +86,12 @@ func main() {
 
 	// 5. Konfigurasi HTTP Server
 	srv := &http.Server{
-		Addr:    ":" + cfg.AppPort,
-		Handler: router,
+		Addr:              ":" + cfg.AppPort,
+		Handler:           router,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       120 * time.Second,
 	}
 
 	// 6. Jalankan Server di dalam Goroutine (Asinkron)
