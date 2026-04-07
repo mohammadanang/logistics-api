@@ -3,7 +3,7 @@ name: Deploy to Google Cloud Run
 on:
   push:
     branches:
-      - main # Akan otomatis deploy setiap ada push ke branch main
+      - master # Akan otomatis deploy setiap ada push ke branch master
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
