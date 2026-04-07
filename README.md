@@ -1,0 +1,1 @@
+"Proyek ini bukan sekadar API CRUD. Saya mengimplementasikan pola Cache-Aside untuk menangani lonjakan traffic tracking, mengamankan transaksi dengan PASETO, dan memastikan integritas data melalui automated testing yang berjalan di CI/CD pipeline."

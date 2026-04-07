@@ -1,0 +1,62 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main # Akan otomatis deploy setiap ada push ke branch main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1 # Sesuaikan dengan region Anda
+  REPO_NAME: logistics-repo
+  IMAGE_NAME: logistics-api
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Autentikasi ke Google Cloud menggunakan JSON Key dari GitHub Secrets
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        workload_identity_provider: '${{ secrets.WIF_PROVIDER_NAME }}'
+        service_account: '${{ secrets.SERVICE_ACCOUNT_EMAIL }}'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    # Konfigurasi Docker agar bisa push ke Artifact Registry GCP
+    - name: Docker Auth
+      run: |-
+        gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+    # Build Docker Image menggunakan Dockerfile yang dibuat di tahap sebelumnya
+    - name: Build Docker Image
+      run: |-
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+
+    # Push Image ke Artifact Registry
+    - name: Push Docker Image
+      run: |-
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+    # Deploy ke Cloud Run
+    - name: Deploy to Cloud Run
+      id: deploy
+      uses: google-github-actions/deploy-cloudrun@v1
+      with:
+        service: logistics-api-service
+        region: ${{ env.REGION }}
+        image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        # Gunakan flag ini agar Cloud Run bisa diakses publik tanpa autentikasi GCP
+        flags: '--allow-unauthenticated'
+
+    # Tampilkan URL Cloud Run yang sudah live!
+    - name: Show Output URL
+      run: echo "App deployed to ${{ steps.deploy.outputs.url }}"
