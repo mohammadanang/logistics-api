@@ -34,6 +34,7 @@ jobs:
       id: auth
       uses: 'google-github-actions/auth@v2'
       with:
+        project_id: '${{ env.PROJECT_ID }}'
         workload_identity_provider: '${{ secrets.WIF_PROVIDER_NAME }}'
         service_account: '${{ secrets.SERVICE_ACCOUNT_EMAIL }}'
 
@@ -60,6 +61,7 @@ jobs:
       id: deploy
       uses: google-github-actions/deploy-cloudrun@v2
       with:
+        project_id: '${{ env.PROJECT_ID }}'
         service: logistics-api-service
         region: ${{ env.REGION }}
         image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
