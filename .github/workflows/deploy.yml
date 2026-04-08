@@ -16,12 +16,16 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
     # Autentikasi ke Google Cloud menggunakan JSON Key dari GitHub Secrets
-    - name: Google Auth
+    - name: Google Auth (Workload Identity)
       id: auth
       uses: 'google-github-actions/auth@v2'
       with:
@@ -34,7 +38,7 @@ jobs:
     # Konfigurasi Docker agar bisa push ke Artifact Registry GCP
     - name: Docker Auth
       run: |-
-        gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+        gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
     # Build Docker Image menggunakan Dockerfile yang dibuat di tahap sebelumnya
     - name: Build Docker Image
