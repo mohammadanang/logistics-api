@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master # Akan otomatis deploy setiap ada push ke branch master
+  workflow_run:
+    workflows: ["Continuous Integration"] # Must match the 'name' of the upstream workflow
+    types:
+      - completed
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -13,6 +17,7 @@ env:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build and Deploy
     runs-on: ubuntu-latest
 

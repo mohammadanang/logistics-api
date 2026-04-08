@@ -33,6 +33,7 @@ jobs:
           $(go env GOPATH)/bin/golangci-lint run ./... --timeout=5m
 
   security:
+    needs: lint
     name: Security Vulnerability Scan
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +47,7 @@ jobs:
           args: ./...
 
   test:
+    needs: [lint, security]
     name: Unit Tests & Coverage
     runs-on: ubuntu-latest
     steps:
