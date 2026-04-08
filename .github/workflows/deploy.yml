@@ -62,6 +62,7 @@ jobs:
       uses: google-github-actions/deploy-cloudrun@v2
       with:
         project_id: '${{ env.PROJECT_ID }}'
+        service_account: '${{ secrets.SERVICE_ACCOUNT_EMAIL }}'
         service: logistics-api-service
         region: ${{ env.REGION }}
         image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
