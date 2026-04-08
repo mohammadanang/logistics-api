@@ -67,7 +67,7 @@ jobs:
         region: ${{ env.REGION }}
         image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         # Gunakan flag ini agar Cloud Run bisa diakses publik tanpa autentikasi GCP
-        flags: '--allow-unauthenticated'
+        # flags: '--allow-unauthenticated'
         env_vars: |-
           APP_ENV=production
           APP_PORT=8080
