@@ -35,11 +35,8 @@ func main() {
 	}
 
 	// 3. Initialize Database & Cache
-	_ = database.NewPostgresConn(cfg.PostgresDSN)
-	_ = cache.NewRedisClient(cfg.RedisAddr)
-
-	db := database.NewPostgresConn(cfg.PostgresDSN)
-	rdb := cache.NewRedisClient(cfg.RedisAddr)
+	db := database.NewPostgresConn(cfg.DatabaseURL)
+	rdb := cache.NewRedisClient(cfg.RedisURL)
 
 	// 4. Wiring Clean Architecture (Setup Dependencies)
 	packageRepo := repository.NewPostgresRepository(db)

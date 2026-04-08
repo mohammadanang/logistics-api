@@ -12,7 +12,7 @@ WORKDIR /root/
 # Salin binary dari stage builder
 COPY --from=builder /app/main .
 # Salin .env (opsional, di produksi biasanya pakai Env Var Cloud)
-COPY --from=builder /app/.env . 
+# COPY --from=builder /app/.env .
 
 EXPOSE 8080
 CMD ["./main"]

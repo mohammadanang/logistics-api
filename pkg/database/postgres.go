@@ -8,8 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewPostgresConn(dsn string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+func NewPostgresConn(databaseUrl string) *gorm.DB {
+	db, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to PostgreSQL: %v", err)
 	}
